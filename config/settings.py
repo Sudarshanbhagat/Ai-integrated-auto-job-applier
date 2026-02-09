@@ -1,18 +1,10 @@
-'''
-Author:     Sai Vignesh Golla
-LinkedIn:   https://www.linkedin.com/in/saivigneshgolla/
+"""
+Global settings for the bot.
 
-Copyright (C) 2024 Sai Vignesh Golla
-
-License:    GNU Affero General Public License
-            https://www.gnu.org/licenses/agpl-3.0.en.html
-            
-GitHub:     https://github.com/GodsScion/Auto_job_applier_linkedIn
-
-Support me: https://github.com/sponsors/GodsScion
-
-version:    26.01.20.5.08
-'''
+Removed the file-level contributor header to keep attribution
+managed via git. This file still contains the runtime configuration
+options that control the bot's behavior.
+"""
 
 
 ###################################################### CONFIGURE YOUR BOT HERE ######################################################
