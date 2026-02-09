@@ -103,6 +103,11 @@ notice_period_months = str(notice_period//30)
 notice_period_weeks = str(notice_period//7)
 notice_period = str(notice_period)
 
+# Selenium global objects - MUST be initialized in main()
+driver = None
+actions = None
+wait = None
+
 aiClient = None
 resume_selector = None  # Phase 2: Resume Intelligence
 
@@ -445,8 +450,9 @@ def get_job_description(
             experience_required = "Error in extraction"
             print_lg("Unable to extract years of experience required!")
             # print_lg(e)
-    finally:
-        return jobDescription, experience_required, skip, skipReason, skipMessage
+    
+    # Return values (removed from finally block to avoid SyntaxWarning)
+    return jobDescription, experience_required, skip, skipReason, skipMessage
         
 
 
@@ -816,7 +822,7 @@ def external_apply(pagination_element: WebElement, job_id: str, job_link: str, r
 
 
 
-def follow_company(modal: WebDriver = driver) -> None:
+def follow_company(modal: WebDriver) -> None:
     '''
     Function to follow or un-follow easy applied companies based om `follow_companies`
     '''
@@ -1203,9 +1209,23 @@ def main() -> None:
     pyautogui.alert("Please consider sponsoring this project at:\n\nhttps://github.com/sponsors/GodsScion\n\n", "Support the project", "Okay")
     total_runs = 1
     try:
-        global linkedIn_tab, tabs_count, useNewResume, aiClient, vault, audit_logger, secrets_manager, account_monitor
+        global driver, actions, wait, linkedIn_tab, tabs_count, useNewResume, aiClient, vault, audit_logger, secrets_manager, account_monitor
         alert_title = "Error Occurred. Closing Browser!"
         validate_config()
+        
+        # Initialize Chrome session - CRITICAL for all Selenium operations
+        try:
+            print_lg("Initializing Chrome browser...")
+            _, driver, actions, wait = createChromeSession()
+            print_lg("Chrome browser initialized successfully.")
+        except Exception as chrome_error:
+            print_lg(f"\n[CRITICAL] Failed to start Chrome browser: {chrome_error}")
+            alert_title = "Chrome Startup Failed"
+            pyautogui.alert(
+                f"Could not start Chrome browser.\n\nError: {chrome_error}\n\nPlease check:\n1. Chrome is installed\n2. Chrome version matches config.py\n3. No Chrome processes are locked\n4. Sufficient disk space available",
+                "Chrome Startup Failed"
+            )
+            raise Exception(f"Chrome startup failed: {chrome_error}")
         
         # Phase 3: Initialize Security Hardening
         if SECURITY_ENABLED:
@@ -1353,9 +1373,12 @@ def main() -> None:
             except Exception as e:
                 print_lg("Failed to close AI client:", e)
         ##<
+        
+        # Safely quit driver if it was initialized
         try:
-            if driver:
+            if driver is not None:
                 driver.quit()
+                print_lg("Browser closed successfully.")
         except WebDriverException as e:
             print_lg("Browser already closed.", e)
         except Exception as e: 

@@ -84,6 +84,15 @@ keep_screen_awake = True            # True or False, Note: True or False are cas
 
 # Run in undetected mode to bypass anti-bot protections (Preview Feature, UNSTABLE. Recommended to leave it as False)
 stealth_mode = True                # True or False, Note: True or False are case-sensitive
+# Chrome driver specific options
+# Set this to the major Chrome version installed on your machine to force matching
+chrome_version_main = 144
+# Use subprocess mode for undetected_chromedriver (more stable on Windows)
+chrome_use_subprocess = True
+# If True, the launcher will attempt to terminate stale chrome/chromedriver processes before starting
+chrome_kill_existing = True
+# Optional dedicated profile path (leave empty to use detected profile)
+chrome_profile_path = ""  # e.g. C:/Users/you/AppData/Local/Google/Chrome/User Data/Profile 1
 
 # Enable Phase 2: Intelligent Resume Selection (Recommended: True for +25-35% response improvement)
 enable_phase2_resume_selection = True  # True or False, Note: True or False are case-sensitive
